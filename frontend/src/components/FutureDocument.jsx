@@ -2,12 +2,12 @@ import '../styles/FutureDocument.css';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Form} from 'react-bootstrap';
+import { Card, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { PlusLg, Link } from 'react-bootstrap-icons';
 import { v4 as uuid } from 'uuid';
 import DocumentList from './DocumentList';
 
-function FutureDocument({relatedTo, setLastUpdate, backend, user}) {
+function FutureDocument({ relatedTo, setLastUpdate, backend, user }) {
   const [verb, setVerb] = useState('refersTo');
   const [showDocumentList, setShowDocumentList] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
@@ -21,7 +21,13 @@ function FutureDocument({relatedTo, setLastUpdate, backend, user}) {
     <Card>
       <Card.Body className="d-flex justify-content-center align-items-center">
         {!fixedType && (
-          <Form.Select aria-label="Select document type" onChange={handleSelectChange} defaultValue="refersTo" className="select-form" id="select-dropdown">
+          <Form.Select
+            aria-label="Select document type"
+            onChange={handleSelectChange}
+            defaultValue="refersTo"
+            className="select-form"
+            id="select-dropdown"
+          >
             <option value="refersTo">Commentary</option>
             <option value="adapts">Adaptation</option>
             <option value="includes">Quotation</option>
@@ -29,20 +35,34 @@ function FutureDocument({relatedTo, setLastUpdate, backend, user}) {
         )}
         <FutureDocumentIcon
           relatedTo={selectedDocument ? [selectedDocument._id] : relatedTo}
-          {...{verb, setLastUpdate, backend, user}}
+          {...{ verb, setLastUpdate, backend, user }}
         />
         {!fixedType && (
-          <Link
-            title="Use an existing document as a glose..."
-            className="icon select-document ms-2 link-icon"
-            onClick={() => setShowDocumentList(!showDocumentList)}
-          />
+          <OverlayTrigger
+            placement="top"
+            overlay={
+              <Tooltip id="tooltip-use-existing">Use an existing document as a glose…</Tooltip>
+            }
+          >
+            <Link
+              className="icon select-document ms-2 link-icon"
+              onClick={() => setShowDocumentList(!showDocumentList)}
+            />
+          </OverlayTrigger>
         )}
       </Card.Body>
       {showDocumentList && (
         <Card.Body>
-          <DocumentList {...{ relatedTo, verb, setSelectedDocument,
-            setShowDocumentList, setLastUpdate, backend, user }}
+          <DocumentList
+            {...{
+              relatedTo,
+              verb,
+              setSelectedDocument,
+              setShowDocumentList,
+              setLastUpdate,
+              backend,
+              user
+            }}
           />
         </Card.Body>
       )}
@@ -50,12 +70,12 @@ function FutureDocument({relatedTo, setLastUpdate, backend, user}) {
   );
 }
 
-function FutureDocumentIcon({relatedTo, verb, setLastUpdate, backend, user}) {
+function FutureDocumentIcon({ relatedTo, verb, setLastUpdate, backend, user }) {
   const navigate = useNavigate();
 
-  let handleClick = async () => {
-    let _id = uuid().replace(/-/g, '');
-    let doc = {
+  const handleClick = async () => {
+    const _id = uuid().replace(/-/g, '');
+    const doc = {
       _id,
       editors: [user],
       dc_creator: '<CREATOR>',
@@ -64,10 +84,12 @@ function FutureDocumentIcon({relatedTo, verb, setLastUpdate, backend, user}) {
       dc_license: '',
       text: '<TEXT>'
     };
-    backend.putDocument({
-      ...doc,
-      links: relatedTo.map(object => ({verb, object}))
-    })
+
+    backend
+      .putDocument({
+        ...doc,
+        links: relatedTo.map((object) => ({ verb, object }))
+      })
       .then(() => {
         setLastUpdate(_id);
         navigate((relatedTo.length ? '#' : `/${_id}#`) + _id);
@@ -76,9 +98,19 @@ function FutureDocumentIcon({relatedTo, verb, setLastUpdate, backend, user}) {
   };
 
   return (
-    <PlusLg title={`Create a document ${relatedTo.length ? 'as a glose' : 'from scratch'}`}
-      className="icon create-document ms-2" onClick={handleClick}
-    />
+    <OverlayTrigger
+      placement="top"
+      overlay={
+        <Tooltip id="tooltip-create-doc">
+          Create a document {relatedTo.length ? 'as a glose' : 'from scratch'}
+        </Tooltip>
+      }
+    >
+      <PlusLg
+        className="icon create-document ms-2"
+        onClick={handleClick}
+      />
+    </OverlayTrigger>
   );
 }
 
