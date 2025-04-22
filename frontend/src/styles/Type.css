@@ -13,3 +13,31 @@
     display: inline-block;
     word-break: break-word;
 }
+
+/* Style plus spécifique pour l'icône de type */
+svg.typeIcon {
+    opacity: 1 !important; /* Force l'icône à être toujours visible */
+    cursor: pointer;
+    transition: filter 0.3s ease;
+    display: inline-block !important;
+    visibility: visible !important;
+}
+
+svg.typeIcon:hover {
+    filter: brightness(1.5); /* Augmente la luminosité au survol */
+}
+
+/* Pour les menus contextuels */
+.dropdown-toggle::after,
+.dropdown-toggle .three-dots {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-block !important;
+}
+
+/* Classes génériques pour la visibilité */
+.always-visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-block !important;
+}

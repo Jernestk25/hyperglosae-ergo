@@ -15,3 +15,40 @@
 .license a:hover {
   color: inherit;
 }
+
+/* Styles pour les icônes et menus contextuels */
+.icon {
+  opacity: 1 !important; /* Toujours visible */
+  cursor: pointer;
+  transition: filter 0.3s ease;
+}
+
+.icon:hover {
+  filter: brightness(1.5); /* Effet de luminosité au survol */
+}
+
+/* Pour s'assurer que les menus déroulants sont toujours visibles */
+.dropdown-menu-icon, .dropdown-toggle-icon {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Styles pour tous les éléments discrets */
+.always-visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.discreete-dropdown-toggle,
+.discreete-dropdown .dropdown-toggle {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-block !important;
+}
+
+.discreete-dropdown .three-dots-icon,
+.discreete-dropdown .dropdown-icon {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-block !important;
+}
